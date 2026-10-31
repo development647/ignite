@@ -355,3 +355,7 @@ A practical feature slice is:
 
 If you only read one file first, read `IgniteEngine.h`; if you only read one implementation first, read
 `SongManager.cpp` around `pulse`, `renderTracksAndMix`, and `audioDeviceIOCallbackWithContext`.
+
+## 13. Companion app
+
+For a companion app or external API, see [companion-app-integration.md](companion-app-integration.md). The short version is that the C++ model and implicit XML files exist, but there is no formal versioned schema or live API contract yet.
