@@ -1,6 +1,8 @@
 # IGNITE documentation
 
 - [Build and setup](build-and-setup.md) — tested desktop prerequisites, build commands, SoundFont/runtime setup, device cross-build, and build-process evaluation.
+- [Architecture guide](architecture-guide.md) — how the engine, parameter bus, model, playback pipeline, UI, hardware and persistence fit together, plus where to add features.
+- [Enhancement roadmap](enhancement-roadmap.md) — product/architecture opportunities, priority matrix, and phased plan for new functionality.
 - [Code review](code-review.md) — security, correctness, lifecycle, and maintainability findings from the static review, with evidence and remediation priorities.
 - [Testing](testing.md) — current test status, smoke tests, manual checklist, sanitizer builds, and hardware-test boundaries.
 

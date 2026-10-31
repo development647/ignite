@@ -70,6 +70,8 @@ ComProtocol). Third-party components keep their original licenses. See the READM
 ## Development
 
 - [Build and setup](docs/build-and-setup.md): tested prerequisites, desktop build, SoundFont/runtime setup, and device cross-build.
+- [Architecture guide](docs/architecture-guide.md): code map, runtime flow, extension points, and where to add features.
+- [Enhancement roadmap](docs/enhancement-roadmap.md): prioritized opportunities for new functionality and structural improvements.
 - [Code review](docs/code-review.md): security, correctness and maintainability findings.
 - [Testing](docs/testing.md): current test status, smoke tests, manual checklist and sanitizer builds.
 
