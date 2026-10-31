@@ -91,20 +91,40 @@ openat(AT_FDCWD, "/app/Ignite.sf2", O_RDONLY) = -1 ENOENT
 SIGSEGV in Ignite::SongManager::SongManager(...)
 ```
 
-Place a `.sf2` file you have the rights to at `Source/Application/sf/Ignite.sf2` so the build copies it into the artifact directory, then make it available at `/app/Ignite.sf2`:
+A tested, legally redistributable replacement is **FluidR3_GM** (MIT, Frank Wen). The Buildroot tree already contains a `fluid-soundfont` package, but it is disabled in the Ignite defconfigs. You can fetch the same file directly from Debian:
+
+```sh
+cd /tmp
+curl -fL -o fluid-soundfont_3.1.orig.tar.gz \
+  https://deb.debian.org/debian/pool/main/f/fluid-soundfont/fluid-soundfont_3.1.orig.tar.gz
+
+# Expected SHA256:
+# 2621acaa1c78e4abdb24bdd163230cc577e61276936d6aa6e3180582142f0343
+sha256sum fluid-soundfont_3.1.orig.tar.gz
+
+tar -xzf fluid-soundfont_3.1.orig.tar.gz
+```
+
+`FluidR3_GM.sf2` is 142 MB. Copy it here and install it at the runtime path:
 
 ```sh
 # from the repository root
+cp /tmp/fluid-soundfont-3.1/FluidR3_GM.sf2 Source/Application/sf/Ignite.sf2
+
 sudo mkdir -p /app
 sudo cp Source/Application/sf/Ignite.sf2 /app/Ignite.sf2
 ```
 
-Or use a symlink:
+Or use a symlink for `/app/Ignite.sf2`:
 
 ```sh
 sudo mkdir -p /app
 sudo ln -sf "$PWD/Source/Application/sf/Ignite.sf2" /app/Ignite.sf2
 ```
+
+`Source/Application/sf/*.sf2` is gitignored. Do not commit the 142 MB file; GitHub rejects files over 100 MB, and the repository is intended to remain source-only. If you need a committed/source-distributed SoundFont, use the Buildroot `fluid-soundfont` package or a release asset. See [Source/Application/sf/README.md](../Source/Application/sf/README.md) for the source, license, and checksum.
+
+**Verified:** the downloaded `FluidR3_GM.sf2` (SHA256 `74594e8f4250680adf590507a306655a299935343583256f3b722c48a1bc1cb0`) loads successfully; the application stayed running for the 30-second smoke-test window when a local file redirect was used for `/app/Ignite.sf2`.
 
 For a packaging change, the better long-term fix is to make the desktop build resolve the SoundFont relative to the executable or `assets/` directory and to make all `tsf_*` calls null-safe. See [code-review.md](code-review.md) finding C2.
 
