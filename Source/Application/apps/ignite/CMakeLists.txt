@@ -170,5 +170,5 @@ if(EXISTS ${IGNITE_SOUNDFONT})
             COMMAND ${CMAKE_COMMAND} -E copy ${IGNITE_SOUNDFONT} ${CMAKE_CURRENT_BINARY_DIR}/Ignite_artefacts/Release/Ignite.sf2
     )
 else()
-    message(STATUS "No SoundFont at ${IGNITE_SOUNDFONT}; the app will start without internal sounds.")
+    message(STATUS "No SoundFont at ${IGNITE_SOUNDFONT}; on Linux the app expects /app/Ignite.sf2 at runtime and will fail without one.")
 endif()
