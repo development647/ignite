@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Song_Info>
+  <Info FILE_VERSION="0"
+        songName="Demo Song"
+        gTrackCount="16"
+        songSwing="0"
+        numberOfScenes="2"
+        songId="0"
+        songTempo="120.0"
+        applySongTempoToScenes="1"
+        applySongSwingToScenes="1"/>
+</Song_Info>

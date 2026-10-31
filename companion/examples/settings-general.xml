@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GeneralCnfg>
+  <settings FILE_VERSION="0"
+            DeviceCnfgUSBParam="0"
+            DeviceCnfgSafeStopParam="0"
+            DeviceCnfgBrightnessParam="80"
+            DeviceCnfgAutoSaveAll="0"
+            InstrumentAutoSave="0"
+            auditioningMaxPort="4"
+            WifiState="0"
+            LastConnectedWiFiSsid="">
+    <auditioningPortPresetInfo auditioningPortPreset1="-1"
+                               auditioningPortPreset2="-1"
+                               auditioningPortPreset3="-1"
+                               auditioningPortPreset4="-1"/>
+  </settings>
+</GeneralCnfg>

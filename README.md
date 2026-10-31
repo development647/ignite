@@ -73,6 +73,7 @@ ComProtocol). Third-party components keep their original licenses. See the READM
 - [Architecture guide](docs/architecture-guide.md): code map, runtime flow, extension points, and where to add features.
 - [Enhancement roadmap](docs/enhancement-roadmap.md): prioritized opportunities for new functionality and structural improvements.
 - [Companion app integration](docs/companion-app-integration.md): existing schema, missing contracts, and a path to a companion editor/API.
+- [Companion workspace](companion/README.md): extracted XML schema and examples for a standalone companion app.
 - [Code review](docs/code-review.md): security, correctness and maintainability findings.
 - [Testing](docs/testing.md): current test status, smoke tests, manual checklist and sanitizer builds.
 

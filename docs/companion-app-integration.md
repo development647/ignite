@@ -276,5 +276,6 @@ lengths and ranges, and keep the device-side adapter thin.
   internal pointers, `FILE_VERSION = 0` XML details, or the current ad-hoc PlayTribe/USB command
   strings.
 
-See [architecture-guide.md](architecture-guide.md) for where the model and parameter bus live, and
-[enhancement-roadmap.md](enhancement-roadmap.md) for the suggested implementation phases.
+See [architecture-guide.md](architecture-guide.md) for where the model and parameter bus live,
+[enhancement-roadmap.md](enhancement-roadmap.md) for the suggested implementation phases, and
+[../companion/README.md](../companion/README.md) for the extracted XML schema and examples.

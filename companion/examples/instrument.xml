@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Instrument>
+  <Data FILE_VERSION="0"
+        id="0"
+        instrumentName="Drum Kit"
+        instrumentDispName="Drum Kit"
+        midiPort="0"
+        midiChannel="9"
+        defaultNote="36"
+        internalSoundPgm="0"
+        internalSound="1"
+        multiTimbralStatus="0"
+        polySpreadStatus="0"
+        transposeDefeatStatus="0"
+        ftsDefeatStatus="0"
+        editTrackThruStatus="0"
+        cc0BankMStatus="0"
+        cc0BankLStatus="0"
+        displayNoteNum="1"
+        preSendPgmChange="0"
+        UsedByCount="1"
+        tm_pan="0"
+        tm_volume="100"
+        tvCount="1"
+        pgmChangeData_bankLSB="0"
+        pgmChangeData_bankMSB="0"
+        pgmChangeData_midiPgmNum="0">
+    <tv knobId="0"
+        name="Tune"
+        paramType="1"
+        savedAt="0"
+        tvMidiCC_minValue="0"
+        tvMidiCC_maxValue="127"
+        tvMidiCC_num="1"
+        tvMidiCC_initValue="64"
+        tvMidiCCvalue="64.0"/>
+    <usedby isFillPattern="0" songName="Demo Song" sceneName="Scene 1" trackName="DRUMS"/>
+  </Data>
+</Instrument>

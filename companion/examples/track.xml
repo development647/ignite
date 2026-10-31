@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Track>
+  <TrackData FILE_VERSION="0"
+             trackMute="0"
+             trackRecordEnable="0"
+             trackSolo="0"
+             trackId="0"
+             trackName="DRUMS"
+             trackRxInstrumentName="Drum Kit"
+             trackTxInstrumentName="Drum Kit"
+             mainPatternName="PATTERN-1"
+             fillPatternName="FILL-1"
+             tvTrackDatasize="1">
+    <tvTrackData first="0" paramType="1" tvMidiCC="64.0"/>
+    <tvTrackData first="1" paramType="2" bankLSB="0" bankMSB="0" midiPgmNum="0"/>
+  </TrackData>
+  <TrackData FILE_VERSION="0"
+             trackMute="0"
+             trackRecordEnable="0"
+             trackSolo="0"
+             trackId="1"
+             trackName="BASS"
+             trackRxInstrumentName="Synth Bass"
+             trackTxInstrumentName="Synth Bass"
+             mainPatternName="PATTERN-2"
+             fillPatternName="FILL-2"
+             tvTrackDatasize="0"/>
+</Track>

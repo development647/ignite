@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pattern>
+  <pattern_info FILE_VERSION="0"
+                id="0"
+                patternDispName="PATTERN-1"
+                numBars="1"
+                timeBase="3"
+                patternLastStepId="15"
+                _barLoopOn="0"
+                _barLoopStartId="-1"
+                _barLoopEndId="-1"
+                UsedByCount="1">
+    <usedby isFillPattern="0" songName="Demo Song" sceneName="Scene 1" trackName="DRUMS"/>
+  </pattern_info>
+</pattern>
