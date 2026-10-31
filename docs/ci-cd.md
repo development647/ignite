@@ -24,12 +24,19 @@ changelog updates are made through the Release Please pull request.
 
 ## Current branch
 
-The repository currently uses `main` as the default branch. All workflows also support `master`, so
-you can rename the default branch without changing the pipeline. PRs should target whichever branch
-is the protected/default branch.
+The fork's default branch is **`master`**. All workflows also support `main`, so the pipeline works
+if the default branch is changed later. Feature and release PRs target the protected/default branch.
 
-If you want the strict `master` flow, rename the default branch to `master` in **Settings → Branches**
-(or via the GitHub API) and keep the protection rules on that branch.
+`master` is protected with:
+
+- pull requests required before merging;
+- required status checks:
+  - `Linux build`
+  - `Conventional PR title`
+- strict/up-to-date checks enabled;
+- conversation resolution required;
+- force pushes and branch deletion disabled;
+- protection applies to administrators as well.
 
 ## Workflows
 
@@ -137,8 +144,8 @@ Add a separate device-image job only after those inputs are available.
 3. Protect the default branch:
    - require pull requests before merging;
    - require status checks:
-     - `CI build / Linux build`
-     - `PR title / Conventional PR title`
+     - `Linux build`
+     - `Conventional PR title`
    - optionally require conversation resolution.
 4. Disable direct pushes to the protected branch.
 5. Enable **Squash and merge** and use the PR title as the squash commit title.
