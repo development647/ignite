@@ -251,11 +251,33 @@ The update packaging scripts (`scripts/createEncryptedImage.sh`) also require th
 | CPU | 4 cores |
 | Configure | Succeeded after installing the package list above |
 | First configure time | ~142 seconds (JUCE fetch + juceaide build) |
-| Build | Succeeded after adding `libxi-dev` and `libiw-dev` |
-| Output | `apps/ignite/Ignite_artefacts/Release/Ignite` (~9.3 MB), `assets/` |
-| Runtime | Failed without `/data/ignite` and `/factory/calibration`; then segfaulted without `/app/Ignite.sf2` |
+| Clean configure from scratch | 2:20.95 (new build directory, fresh JUCE fetch) |
+| Clean build from scratch | 4:42.59 with `-j4` |
+| Clean output | `Ignite` 9.0 MB, `assets/` 12 MB, `Ignite.sf2` 142 MB |
+| Runtime | Failed without `/data/ignite` and `/factory/calibration`; segfaulted without `/app/Ignite.sf2`; passed a 30-second smoke test with FluidR3_GM |
 | Windows/macOS | Not tested in this environment |
 | aarch64 device | Not tested; requires the Buildroot SDK |
+
+### Clean-build verification (2026-10-31)
+
+A completely fresh build was run in a new directory:
+
+```sh
+rm -rf /tmp/ignite-build-clean
+cmake -S Source/Application -B /tmp/ignite-build-clean -DCMAKE_BUILD_TYPE=Release
+cmake --build /tmp/ignite-build-clean --config Release -j4
+```
+
+Results:
+
+- Configure: `2:20.95`
+- Build: `4:42.59`
+- Total: approximately 7 minutes on 4 cores
+- Final target: `[100%] Built target Ignite`
+- Output: `Ignite` 9.0 MB, `assets/` 12 MB, copied `Ignite.sf2` 142 MB
+- Smoke test: `timeout 30 xvfb-run ... ./Ignite` returned `124`, meaning the process was still running after 30 seconds
+
+The clean build re-ran CMake once during the build because of the `timestamp/clear_cache` target; that reconfigure took about 68 seconds and is included in the build time. The `lto-wrapper` warning about serial LTRANS compilation is expected.
 
 ### Observed build issues
 
