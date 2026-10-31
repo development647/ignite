@@ -76,6 +76,7 @@ ComProtocol). Third-party components keep their original licenses. See the READM
 - [Companion workspace](companion/README.md): extracted XML schema and examples for a standalone companion app.
 - [Code review](docs/code-review.md): security, correctness and maintainability findings.
 - [Testing](docs/testing.md): current test status, smoke tests, manual checklist and sanitizer builds.
+- [CI/CD and releases](docs/ci-cd.md): PR flow, semantic versioning, release artifacts and branch protection.
 
 ## Community
 

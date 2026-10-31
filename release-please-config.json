@@ -1,0 +1,13 @@
+{
+  "bootstrap-sha": "0371a3ea22fc530e23e2321068a0b8835e1e6502",
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "package-name": "ignite",
+      "version-file": "Source/Application/apps/ignite/version.txt",
+      "changelog-path": "CHANGELOG.md",
+      "include-component-in-tag": false,
+      "include-v-in-tag": true
+    }
+  }
+}

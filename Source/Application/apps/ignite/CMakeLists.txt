@@ -2,16 +2,29 @@ cmake_minimum_required(VERSION 3.15)
 
 ## Read version information from the file...
 file(READ "version.txt" ver)
+string(STRIP "${ver}" FullVersion)
 
-## Parse version info, and read variables...
-string(REGEX MATCH "VERSION_MAJOR ([0-9]*)" _ ${ver})
-set(PROJECT_VERSION_MAJOR ${CMAKE_MATCH_1})
-
-string(REGEX MATCH "VERSION_MINOR ([0-9]*)" _ ${ver})
-set(PROJECT_VERSION_MINOR ${CMAKE_MATCH_1})
-
-string(REGEX MATCH "VERSION_PATCH ([0-9]*)" _ ${ver})
-set(PROJECT_VERSION_PATCH ${CMAKE_MATCH_1})
+## Parse semantic version. The file is normally a single line such as
+## "1.4.2" (release-please updates it). The legacy VERSION_MAJOR/MINOR/PATCH
+## format is still accepted so older checkouts keep working.
+if(FullVersion MATCHES "^([0-9]+)\\.([0-9]+)\\.([0-9]+)([-+][0-9A-Za-z.-]+)?$")
+  set(PROJECT_VERSION_MAJOR "${CMAKE_MATCH_1}")
+  set(PROJECT_VERSION_MINOR "${CMAKE_MATCH_2}")
+  set(PROJECT_VERSION_PATCH "${CMAKE_MATCH_3}")
+  set(PROJECT_VERSION_SUFFIX "${CMAKE_MATCH_4}")
+  set(FullVersion "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}${PROJECT_VERSION_SUFFIX}")
+else()
+  string(REGEX MATCH "VERSION_MAJOR ([0-9]*)" _ "${ver}")
+  set(PROJECT_VERSION_MAJOR "${CMAKE_MATCH_1}")
+  string(REGEX MATCH "VERSION_MINOR ([0-9]*)" _ "${ver}")
+  set(PROJECT_VERSION_MINOR "${CMAKE_MATCH_1}")
+  string(REGEX MATCH "VERSION_PATCH ([0-9]*)" _ "${ver}")
+  set(PROJECT_VERSION_PATCH "${CMAKE_MATCH_1}")
+  string(REGEX MATCH "VERSION_SUFFIX ([^\r\n]*)" _ "${ver}")
+  set(PROJECT_VERSION_SUFFIX "${CMAKE_MATCH_1}")
+  string(STRIP "${PROJECT_VERSION_SUFFIX}" PROJECT_VERSION_SUFFIX)
+  set(FullVersion "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}${PROJECT_VERSION_SUFFIX}")
+endif()
 
 ## Setup target configuration...
 set(TargetName      Ignite)         # Project name
@@ -28,7 +41,7 @@ set(TargetSrc_DIR ".")
 configure_file(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 message( "## Project: ${TargetName}" ) 
-message( "## Version: ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}" )
+message( "## Version: ${FullVersion}" )
 
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -93,7 +106,8 @@ target_compile_definitions(${TargetName}
         JUCE_PLUGINHOST_AU=${USE_AU}
         JUCE_ENABLE_REPAINT_DEBUGGING=0
         THPAR_SQLITE=1
-        USE_OPTICK=${USE_OPTICK_VAL}        
+        USE_OPTICK=${USE_OPTICK_VAL}
+        IGNITE_VERSION_STRING="${FullVersion}"
 )
 
 target_link_libraries(${TargetName} 

@@ -11,3 +11,5 @@ cmake-build-*/
 
 # Editor settings
 .vscode/
+/dist/
+/.cpm-cache/
