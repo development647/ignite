@@ -1,0 +1,99 @@
+name: Release Please
+
+on:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release-please-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: Update release PR
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Run release-please
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          target-branch: ${{ github.ref_name }}
+          # A PAT is recommended so the release PR triggers CI. Without it,
+          # the action falls back to GITHUB_TOKEN, which GitHub does not use to
+          # start new workflow runs.
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+
+  release-build:
+    name: Build release artifacts
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    env:
+      CPM_SOURCE_CACHE: ${{ github.workspace }}/.cpm-cache
+    steps:
+      - name: Checkout release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+          fetch-depth: 0
+
+      - name: Cache CPM/JUCE sources
+        uses: actions/cache@v4
+        with:
+          path: .cpm-cache
+          key: cpm-${{ runner.os }}-juce-7.0.12-v1
+
+      - name: Install Linux build dependencies
+        run: bash scripts/ci/install-linux-deps.sh
+
+      - name: Verify tag and version file
+        id: version
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.release-please.outputs.version }}"
+          if [[ -z "${VERSION}" ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          FILE_VERSION="$(tr -d '[:space:]' < Source/Application/apps/ignite/version.txt)"
+          if [[ "${FILE_VERSION}" != "${VERSION}" ]]; then
+            echo "error: release version ${VERSION} does not match version.txt (${FILE_VERSION})" >&2
+            exit 1
+          fi
+          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+
+      - name: Build and package
+        run: bash scripts/ci/build.sh "${{ steps.version.outputs.version }}"
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ignite-${{ steps.version.outputs.version }}-linux-x86_64
+          path: |
+            dist/*.zip
+            dist/*.sha256
+          if-no-files-found: error
+
+      - name: Upload release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="${{ needs.release-please.outputs.tag_name }}"
+          if ! gh release view "${TAG}" >/dev/null 2>&1; then
+            gh release create "${TAG}" \
+              --title "IGNITE ${TAG}" \
+              --notes "Release ${TAG}"
+          fi
+          gh release upload "${TAG}" dist/*.zip dist/*.sha256 --clobber

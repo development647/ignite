@@ -90,7 +90,14 @@ public:
 	}
 
 	const juce::String getApplicationName() override { return ProjectInfo::projectName; }
-	const juce::String getApplicationVersion() override { return ProjectInfo::versionString; }
+	const juce::String getApplicationVersion() override
+	{
+#ifdef IGNITE_VERSION_STRING
+		return juce::String(IGNITE_VERSION_STRING);
+#else
+		return ProjectInfo::versionString;
+#endif
+	}
 	bool moreThanOneInstanceAllowed() override { return true; }
 
 	//==============================================================================

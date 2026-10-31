@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  IGNITE project XML schema, derived from:
+    Source/Application/modules/Firmware/Application/Model/EngineFileHandler.cpp
+    Source/Application/modules/common_defs/source/EngineDataStruct.h
+    Source/Application/modules/Firmware/Application/Model/ModelParams.h
+
+  This describes the CURRENT on-device file format, not a new format.
+  It is a v0 reconstruction: the implementation writes FILE_VERSION = 0
+  and has no migration framework. All attributes are optional in this schema
+  so newer/older files with missing or added attributes can still be inspected;
+  use application-level validation for required fields and ranges.
+
+  The root elements are separate because IGNITE stores a project as a tree of
+  small XML files (each file has one of these roots), not as one document.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           version="0.1">
+
+  <xs:annotation>
+    <xs:documentation>
+      IGNITE XML file format v0. See companion/schema/README.md for the
+      file-to-root mapping and known limitations.
+    </xs:documentation>
+  </xs:annotation>
+
+  <!-- ============================================================ -->
+  <!-- Shared attribute groups                                      -->
+  <!-- ============================================================ -->
+
+  <xs:attributeGroup name="FileVersion">
+    <xs:attribute name="FILE_VERSION" type="xs:nonNegativeInteger" use="optional"/>
+  </xs:attributeGroup>
+
+  <xs:complexType name="UsedBy">
+    <xs:attribute name="isFillPattern" type="xs:boolean" use="optional"/>
+    <xs:attribute name="songName" type="xs:string" use="optional"/>
+    <xs:attribute name="sceneName" type="xs:string" use="optional"/>
+    <xs:attribute name="trackName" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- ============================================================ -->
+  <!-- System / main info                                           -->
+  <!-- ============================================================ -->
+
+  <xs:element name="SyStemStatus">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Info" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:attributeGroup ref="FileVersion"/>
+            <xs:attribute name="securePowerOffStatus" type="xs:unsignedByte" use="optional"/>
+            <xs:attribute name="isBackupToBeDone" type="xs:unsignedByte" use="optional"/>
+            <xs:attribute name="failBootCount" type="xs:unsignedByte" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="mainInfoData">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Info" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:attributeGroup ref="FileVersion"/>
+            <xs:attribute name="activeSongId" type="xs:int" use="optional"/>
+            <xs:attribute name="masterVolume" type="xs:decimal" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ============================================================ -->
+  <!-- Song                                                         -->
+  <!-- ============================================================ -->
+
+  <xs:element name="Song_Info">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Info" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:attributeGroup ref="FileVersion"/>
+            <xs:attribute name="songName" type="xs:string" use="optional"/>
+            <xs:attribute name="gTrackCount" type="xs:unsignedByte" use="optional"/>
+            <xs:attribute name="songSwing" type="xs:unsignedByte" use="optional"/>
+            <xs:attribute name="numberOfScenes" type="xs:int" use="optional"/>
+            <xs:attribute name="songId" type="xs:int" use="optional"/>
+            <xs:attribute name="songTempo" type="xs:decimal" use="optional"/>
+            <xs:attribute name="applySongTempoToScenes" type="xs:boolean" use="optional"/>
+            <xs:attribute name="applySongSwingToScenes" type="xs:boolean" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ============================================================ -->
+  <!-- Scene                                                        -->
+  <!-- ============================================================ -->
+
+  <xs:element name="SceneInfo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Info" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:attributeGroup ref="FileVersion"/>
+            <xs:attribute name="transposeAfterFTS" type="xs:boolean" use="optional"/>
+            <xs:attribute name="sceneSwing" type="xs:byte" use="optional"/>
+            <xs:attribute name="gBarLenInSteps" type="xs:byte" use="optional"/>
+            <xs:attribute name="numBars" type="xs:unsignedShort" use="optional"/>
+            <xs:attribute name="mode" type="xs:unsignedByte" use="optional"/>
+            <xs:attribute name="scaleFTS" type="xs:unsignedByte" use="optional"/>
+            <xs:attribute name="noteFTS" type="xs:unsignedByte" use="optional"/>
+            <xs:attribute name="transposeValue" type="xs:byte" use="optional"/>
+            <xs:attribute name="numberOfTracks" type="xs:unsignedByte" use="optional"/>
+            <xs:attribute name="sceneId" type="xs:unsignedInt" use="optional"/>
+            <xs:attribute name="trackMuteStatus" type="xs:unsignedLong" use="optional"/>
+            <xs:attribute name="sceneTempo" type="xs:decimal" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ============================================================ -->
+  <!-- Tracks (one file per scene)                                  -->
+  <!-- ============================================================ -->
+
+  <xs:complexType name="TrackValue">
+    <xs:attribute name="first" type="xs:byte" use="optional"/>
+    <xs:attribute name="paramType" type="xs:unsignedByte" use="optional"/>
+    <!-- TVTypeMidiCC == 1 -->
+    <xs:attribute name="tvMidiCC" type="xs:decimal" use="optional"/>
+    <!-- TVTypePgmChange == 2 (writer currently omits these values) -->
+    <xs:attribute name="bankLSB" type="xs:byte" use="optional"/>
+    <xs:attribute name="bankMSB" type="xs:byte" use="optional"/>
+    <xs:attribute name="midiPgmNum" type="xs:byte" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="TrackData">
+    <xs:sequence>
+      <xs:element name="tvTrackData" type="TrackValue" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="FileVersion"/>
+    <xs:attribute name="trackMute" type="xs:boolean" use="optional"/>
+    <xs:attribute name="trackRecordEnable" type="xs:boolean" use="optional"/>
+    <xs:attribute name="trackSolo" type="xs:boolean" use="optional"/>
+    <xs:attribute name="trackId" type="xs:unsignedByte" use="optional"/>
+    <xs:attribute name="trackName" type="xs:string" use="optional"/>
+    <xs:attribute name="trackRxInstrumentName" type="xs:string" use="optional"/>
+    <xs:attribute name="trackTxInstrumentName" type="xs:string" use="optional"/>
+    <xs:attribute name="mainPatternName" type="xs:string" use="optional"/>
+    <xs:attribute name="fillPatternName" type="xs:string" use="optional"/>
+    <xs:attribute name="tvTrackDatasize" type="xs:unsignedByte" use="optional"/>
+  </xs:complexType>
+
+  <xs:element name="Track">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="TrackData" type="TrackData" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ============================================================ -->
+  <!-- Pattern                                                      -->
+  <!-- ============================================================ -->
+
+  <xs:element name="pattern">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="pattern_info" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="usedby" type="UsedBy" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attributeGroup ref="FileVersion"/>
+            <xs:attribute name="id" type="xs:int" use="optional"/>
+            <xs:attribute name="patternDispName" type="xs:string" use="optional"/>
+            <xs:attribute name="numBars" type="xs:unsignedByte" use="optional"/>
+            <xs:attribute name="timeBase" type="xs:unsignedByte" use="optional"/>
+            <xs:attribute name="patternLastStepId" type="xs:short" use="optional"/>
+            <xs:attribute name="_barLoopOn" type="xs:boolean" use="optional"/>
+            <xs:attribute name="_barLoopStartId" type="xs:byte" use="optional"/>
+            <xs:attribute name="_barLoopEndId" type="xs:byte" use="optional"/>
+            <xs:attribute name="UsedByCount" type="xs:unsignedInt" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ============================================================ -->
+  <!-- Pattern bar                                                  -->
+  <!-- ============================================================ -->
+
+  <xs:element name="pattern_bar">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="bar_info" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:attributeGroup ref="FileVersion"/>
+            <xs:attribute name="id" type="xs:unsignedByte" use="optional"/>
+            <xs:attribute name="stepCount" type="xs:unsignedShort" use="optional"/>
+            <xs:attribute name="barRepeatCount" type="xs:unsignedByte" use="optional"/>
+            <xs:attribute name="barTransposeDefeat" type="xs:boolean" use="optional"/>
+            <xs:attribute name="gBarSyncOn" type="xs:boolean" use="optional"/>
+            <xs:attribute name="direction" type="xs:unsignedByte" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ============================================================ -->
+  <!-- Pattern step / notes / aux                                   -->
+  <!-- ============================================================ -->
+
+  <xs:complexType name="NoteData">
+    <xs:attribute name="nodeId" type="xs:unsignedShort" use="optional"/>
+    <xs:attribute name="note" type="xs:unsignedByte" use="optional"/>
+    <xs:attribute name="velocity" type="xs:unsignedByte" use="optional"/>
+    <xs:attribute name="lenInSteps" type="xs:unsignedByte" use="optional"/>
+    <xs:attribute name="lenInTicks" type="xs:unsignedShort" use="optional"/>
+    <xs:attribute name="delay" type="xs:byte" use="optional"/>
+    <xs:attribute name="step_id" type="xs:unsignedShort" use="optional"/>
+    <xs:attribute name="noteCount" type="xs:unsignedByte" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="AuxData">
+    <xs:attribute name="state" type="xs:boolean" use="optional"/>
+    <xs:attribute name="statusByte" type="xs:unsignedShort" use="optional"/>
+    <xs:attribute name="dataByte1" type="xs:byte" use="optional"/>
+    <xs:attribute name="dataByte2" type="xs:byte" use="optional"/>
+    <xs:attribute name="offset" type="xs:byte" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="StepNodeData">
+    <xs:sequence>
+      <xs:element name="note_data" type="NoteData" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="StepData">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="step_node_data" type="StepNodeData"/>
+      <xs:element name="aux_data" type="AuxData"/>
+    </xs:choice>
+    <xs:attributeGroup ref="FileVersion"/>
+    <xs:attribute name="stepId" type="xs:unsignedShort" use="optional"/>
+    <xs:attribute name="nodeCount_size" type="xs:unsignedInt" use="optional"/>
+    <xs:attribute name="enable" type="xs:boolean" use="optional"/>
+    <xs:attribute name="skipStatus" type="xs:boolean" use="optional"/>
+    <xs:attribute name="transposeDefeatStatus" type="xs:boolean" use="optional"/>
+    <xs:attribute name="tieStatus" type="xs:boolean" use="optional"/>
+  </xs:complexType>
+
+  <xs:element name="step">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="step_data" type="StepData" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ============================================================ -->
+  <!-- Instrument                                                   -->
+  <!-- ============================================================ -->
+
+  <xs:complexType name="InstrumentTV">
+    <xs:attribute name="knobId" type="xs:byte" use="optional"/>
+    <xs:attribute name="name" type="xs:string" use="optional"/>
+    <xs:attribute name="paramType" type="xs:unsignedByte" use="optional"/>
+    <xs:attribute name="savedAt" type="xs:unsignedByte" use="optional"/>
+    <xs:attribute name="tvMidiCC_minValue" type="xs:byte" use="optional"/>
+    <xs:attribute name="tvMidiCC_maxValue" type="xs:byte" use="optional"/>
+    <xs:attribute name="tvMidiCC_num" type="xs:byte" use="optional"/>
+    <xs:attribute name="tvMidiCC_initValue" type="xs:byte" use="optional"/>
+    <xs:attribute name="tvMidiCCvalue" type="xs:decimal" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="InstrumentData">
+    <xs:sequence>
+      <xs:element name="tv" type="InstrumentTV" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="usedby" type="UsedBy" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="FileVersion"/>
+    <xs:attribute name="id" type="xs:int" use="optional"/>
+    <xs:attribute name="instrumentName" type="xs:string" use="optional"/>
+    <xs:attribute name="instrumentDispName" type="xs:string" use="optional"/>
+    <xs:attribute name="midiPort" type="xs:byte" use="optional"/>
+    <xs:attribute name="midiChannel" type="xs:byte" use="optional"/>
+    <xs:attribute name="defaultNote" type="xs:unsignedByte" use="optional"/>
+    <xs:attribute name="internalSoundPgm" type="xs:int" use="optional"/>
+    <xs:attribute name="internalSound" type="xs:boolean" use="optional"/>
+    <xs:attribute name="multiTimbralStatus" type="xs:boolean" use="optional"/>
+    <xs:attribute name="polySpreadStatus" type="xs:boolean" use="optional"/>
+    <xs:attribute name="transposeDefeatStatus" type="xs:boolean" use="optional"/>
+    <xs:attribute name="ftsDefeatStatus" type="xs:boolean" use="optional"/>
+    <xs:attribute name="editTrackThruStatus" type="xs:boolean" use="optional"/>
+    <xs:attribute name="cc0BankMStatus" type="xs:boolean" use="optional"/>
+    <xs:attribute name="cc0BankLStatus" type="xs:boolean" use="optional"/>
+    <xs:attribute name="displayNoteNum" type="xs:boolean" use="optional"/>
+    <xs:attribute name="preSendPgmChange" type="xs:boolean" use="optional"/>
+    <xs:attribute name="UsedByCount" type="xs:unsignedInt" use="optional"/>
+    <xs:attribute name="tm_pan" type="xs:byte" use="optional"/>
+    <xs:attribute name="tm_volume" type="xs:byte" use="optional"/>
+    <xs:attribute name="tvCount" type="xs:unsignedByte" use="optional"/>
+    <xs:attribute name="pgmChangeData_bankLSB" type="xs:byte" use="optional"/>
+    <xs:attribute name="pgmChangeData_bankMSB" type="xs:byte" use="optional"/>
+    <xs:attribute name="pgmChangeData_midiPgmNum" type="xs:byte" use="optional"/>
+  </xs:complexType>
+
+  <xs:element name="Instrument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Data" type="InstrumentData" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ============================================================ -->
+  <!-- MIDI configuration                                           -->
+  <!-- ============================================================ -->
+
+  <xs:element name="MidiCnfg">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="settings" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="DataMidiCnfg" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="sourcePort" type="xs:byte" use="optional"/>
+                  <xs:attribute name="type" type="xs:unsignedByte" use="optional"/>
+                  <xs:attribute name="destPort" type="xs:byte" use="optional"/>
+                  <xs:attribute name="destChannel" type="xs:byte" use="optional"/>
+                  <xs:attribute name="thruFTSEnabled" type="xs:boolean" use="optional"/>
+                  <xs:attribute name="midiClkTxEnabled" type="xs:boolean" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attributeGroup ref="FileVersion"/>
+            <xs:attribute name="DataLocation" type="xs:byte" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- ============================================================ -->
+  <!-- Settings roots                                               -->
+  <!--                                                              -->
+  <!-- The settings files are many and still changing. They are      -->
+  <!-- intentionally loose here so a companion can read/round-trip  -->
+  <!-- them without claiming more validation than the device does.  -->
+  <!-- Extract exact attributes from EngineFileHandler.cpp before    -->
+  <!-- relying on any particular settings field.                     -->
+  <!-- ============================================================ -->
+
+  <xs:complexType name="LooseSettingsDocument">
+    <xs:sequence>
+      <xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+    </xs:sequence>
+    <xs:anyAttribute processContents="lax"/>
+  </xs:complexType>
+
+  <xs:element name="GeneralCnfg" type="LooseSettingsDocument"/>
+  <xs:element name="SongCnfgData" type="LooseSettingsDocument"/>
+  <xs:element name="SceneCnfData" type="LooseSettingsDocument"/>
+  <xs:element name="TrackCnfData" type="LooseSettingsDocument"/>
+  <xs:element name="PatternCnfgData" type="LooseSettingsDocument"/>
+  <xs:element name="RecordCnfgData" type="LooseSettingsDocument"/>
+  <xs:element name="BRayCnfgData" type="LooseSettingsDocument"/>
+  <xs:element name="RemoteControlCnfgData" type="LooseSettingsDocument"/>
+  <xs:element name="MidiMachineControlCnfgData" type="LooseSettingsDocument"/>
+  <xs:element name="MidiClkCnfgData" type="LooseSettingsDocument"/>
+  <xs:element name="SculptModeCnfgData" type="LooseSettingsDocument"/>
+  <xs:element name="UdsCnfgData" type="LooseSettingsDocument"/>
+  <xs:element name="CvioCnfgS" type="LooseSettingsDocument"/>
+  <xs:element name="CalibOffset" type="LooseSettingsDocument"/>
+
+</xs:schema>

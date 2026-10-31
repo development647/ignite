@@ -99,22 +99,44 @@ if(JUCE_ADDED)
     message(STATUS "Downloaded JUCE repository into \"${JUCE_SOURCE_DIR}\"")
     add_subdirectory(${JUCE_SOURCE_DIR} ./cmake_build_juce)
 
-    # Check if patch is already applied
-    if(NOT EXISTS ${PATCH_FLAG_FILE})
-	    # Apply patch to JUCE
-	    execute_process(
-		    COMMAND git apply ${CMAKE_SOURCE_DIR}/patch/juce_multitouch.patch
-		    WORKING_DIRECTORY ${JUCE_SOURCE_DIR}
-		    RESULT_VARIABLE patch_result
-		    )
-	    if(patch_result)
-		    message(FATAL_ERROR "Failed to apply patch to JUCE: ${patch_result}")
-	    else()
-		    message(STATUS "Patch applied successfully to JUCE.")
-		    file(WRITE ${PATCH_FLAG_FILE} "JUCE patch applied")
-	    endif()
+    # Apply the multitouch patch idempotently. A shared CPM_SOURCE_CACHE can
+    # already contain a patched JUCE checkout, so a build-directory-only flag
+    # is not sufficient.
+    set(JUCE_PATCH ${CMAKE_SOURCE_DIR}/patch/juce_multitouch.patch)
+
+    execute_process(
+        COMMAND git apply --check ${JUCE_PATCH}
+        WORKING_DIRECTORY ${JUCE_SOURCE_DIR}
+        RESULT_VARIABLE patch_check_result
+        OUTPUT_QUIET
+        ERROR_QUIET
+    )
+
+    if(patch_check_result EQUAL 0)
+        execute_process(
+            COMMAND git apply ${JUCE_PATCH}
+            WORKING_DIRECTORY ${JUCE_SOURCE_DIR}
+            RESULT_VARIABLE patch_result
+        )
+        if(patch_result)
+            message(FATAL_ERROR "Failed to apply patch to JUCE: ${patch_result}")
+        else()
+            message(STATUS "Patch applied successfully to JUCE.")
+            file(WRITE ${PATCH_FLAG_FILE} "JUCE patch applied")
+        endif()
     else()
-	    message(STATUS "Patch already applied to JUCE. Skipping patch step.")
+        execute_process(
+            COMMAND git apply --reverse --check ${JUCE_PATCH}
+            WORKING_DIRECTORY ${JUCE_SOURCE_DIR}
+            RESULT_VARIABLE reverse_check_result
+            OUTPUT_QUIET
+            ERROR_QUIET
+        )
+        if(reverse_check_result EQUAL 0)
+            message(STATUS "JUCE patch already applied in the source cache. Skipping patch step.")
+        else()
+            message(FATAL_ERROR "JUCE patch does not apply and is not already applied. The JUCE source may be modified.")
+        endif()
     endif()
 endif()
 

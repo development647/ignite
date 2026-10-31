@@ -67,6 +67,17 @@ official firmware release here yet.
 The root [`LICENSE`](LICENSE) is the AGPL-3.0 text that covers the Music Tribe code (Application, AudIO,
 ComProtocol). Third-party components keep their original licenses. See the README in each folder.
 
+## Development
+
+- [Build and setup](docs/build-and-setup.md): tested prerequisites, desktop build, SoundFont/runtime setup, and device cross-build.
+- [Architecture guide](docs/architecture-guide.md): code map, runtime flow, extension points, and where to add features.
+- [Enhancement roadmap](docs/enhancement-roadmap.md): prioritized opportunities for new functionality and structural improvements.
+- [Companion app integration](docs/companion-app-integration.md): existing schema, missing contracts, and a path to a companion editor/API.
+- [Companion workspace](companion/README.md): extracted XML schema and examples for a standalone companion app.
+- [Code review](docs/code-review.md): security, correctness and maintainability findings.
+- [Testing](docs/testing.md): current test status, smoke tests, manual checklist and sanitizer builds.
+- [CI/CD and releases](docs/ci-cd.md): PR flow, semantic versioning, release artifacts and branch protection.
+
 ## Community
 
 - **Chat with us:** [Discord](https://discord.gg/gS6qtuShvw)

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<step>
+  <step_data FILE_VERSION="0"
+             stepId="0"
+             nodeCount_size="1"
+             enable="1"
+             skipStatus="0"
+             transposeDefeatStatus="0"
+             tieStatus="0">
+    <step_node_data>
+      <note_data nodeId="0"
+                 note="36"
+                 velocity="100"
+                 lenInSteps="0"
+                 lenInTicks="15"
+                 delay="0"
+                 step_id="0"
+                 noteCount="1"/>
+    </step_node_data>
+    <aux_data state="1" statusByte="176" dataByte1="1" dataByte2="64" offset="0"/>
+  </step_data>
+  <step_data FILE_VERSION="0"
+             stepId="1"
+             nodeCount_size="0"
+             enable="1"
+             skipStatus="0"
+             transposeDefeatStatus="0"
+             tieStatus="0"/>
+</step>

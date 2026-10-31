@@ -24,7 +24,11 @@ cmake --build build --config Release
 ```
 
 The app is written to `build/apps/ignite/Ignite_artefacts/<Config>/`, together with `assets/`, which it
-loads at runtime. The General MIDI SoundFont is not included; see [sf/README.md](sf/README.md).
+loads at runtime. The General MIDI SoundFont is not included; see [sf/README.md](sf/README.md). On
+Linux the application opens `/app/Ignite.sf2` at runtime, not a file next to the executable, and it
+currently crashes if that file is missing. See
+[the build and setup guide](../../docs/build-and-setup.md) for the tested Linux package list, runtime
+directories, and SoundFont setup.
 
 Device (aarch64): build the SDK from the companion Buildroot tree (`Linux/`) with
 `make Ignite_defconfig && make sdk`, then pass the SDK's toolchain file:

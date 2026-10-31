@@ -1,0 +1,3 @@
+# SoundFont binaries are large and may have their own licenses.
+# Keep local copies out of git; see README.md for the tested source.
+*.sf2

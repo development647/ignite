@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IgniteProject schemaVersion="1"
+               format="ignite-xml"
+               createdAt="2026-10-31T12:00:00Z"
+               updatedAt="2026-10-31T12:00:00Z"
+               minimumFirmwareVersion="0.3.3">
+  <Metadata projectName="Demo Song"
+            createdBy="ignite-companion"
+            deviceModel="IGNITE"
+            firmwareVersion="0.3.3"
+            minimumReaderVersion="1"/>
+
+  <Objects>
+    <Object type="song" path="Songs/Demo Song" name="Demo Song" id="0"/>
+    <Object type="scene" path="Songs/Demo Song/Scene 1" name="Scene 1" id="0"/>
+    <Object type="track-list" path="Songs/Demo Song/Scene 1/TrackV1.txt" name="Scene 1 tracks"/>
+    <Object type="pattern" path="Patterns/PATTERN-1" name="PATTERN-1" id="0"/>
+    <Object type="bar" path="Patterns/PATTERN-1/BAR-0" name="BAR-0" id="0"/>
+    <Object type="step" path="Patterns/PATTERN-1/BAR-0/step.txt" name="BAR-0 steps"/>
+    <Object type="instrument" path="Instruments/Drum Kit.txt" name="Drum Kit" id="0"/>
+    <Object type="settings" path="Settings/SettingCnfg.txt" name="GeneralCnfg"/>
+  </Objects>
+
+  <Files>
+    <File path="Songs/Demo Song/info.txt"
+          type="Song_Info"
+          fileVersion="0"
+          bytes="0"
+          sha256="0000000000000000000000000000000000000000000000000000000000000000"/>
+    <File path="Songs/Demo Song/Scene 1/info.txt"
+          type="SceneInfo"
+          fileVersion="0"
+          bytes="0"
+          sha256="0000000000000000000000000000000000000000000000000000000000000000"/>
+    <File path="Songs/Demo Song/Scene 1/TrackV1.txt"
+          type="Track"
+          fileVersion="0"
+          bytes="0"
+          sha256="0000000000000000000000000000000000000000000000000000000000000000"/>
+    <File path="Patterns/PATTERN-1/info.txt"
+          type="pattern"
+          fileVersion="0"
+          bytes="0"
+          sha256="0000000000000000000000000000000000000000000000000000000000000000"/>
+    <File path="Patterns/PATTERN-1/BAR-0/info.txt"
+          type="pattern_bar"
+          fileVersion="0"
+          bytes="0"
+          sha256="0000000000000000000000000000000000000000000000000000000000000000"/>
+    <File path="Patterns/PATTERN-1/BAR-0/step.txt"
+          type="step"
+          fileVersion="0"
+          bytes="0"
+          sha256="0000000000000000000000000000000000000000000000000000000000000000"/>
+    <File path="Instruments/Drum Kit.txt"
+          type="Instrument"
+          fileVersion="0"
+          bytes="0"
+          sha256="0000000000000000000000000000000000000000000000000000000000000000"/>
+    <File path="Settings/SettingCnfg.txt"
+          type="GeneralCnfg"
+          fileVersion="0"
+          bytes="0"
+          sha256="0000000000000000000000000000000000000000000000000000000000000000"/>
+  </Files>
+
+  <MigrationHistory>
+    <Migration from="0"
+               to="1"
+               appliedAt="2026-10-31T12:00:00Z"
+               appVersion="0.1.0"
+               note="Added manifest and checksums; no object fields changed."/>
+  </MigrationHistory>
+</IgniteProject>

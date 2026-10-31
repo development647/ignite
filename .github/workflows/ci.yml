@@ -1,0 +1,54 @@
+name: CI build
+
+on:
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CPM_SOURCE_CACHE: ${{ github.workspace }}/.cpm-cache
+  VERSION: 0.0.0-pr.${{ github.event.pull_request.number || github.run_number }}
+
+jobs:
+  linux:
+    name: Linux build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache CPM/JUCE sources
+        uses: actions/cache@v4
+        with:
+          path: .cpm-cache
+          key: cpm-${{ runner.os }}-juce-7.0.12-v1
+
+      - name: Install Linux build dependencies
+        run: bash scripts/ci/install-linux-deps.sh
+
+      - name: Show toolchain
+        run: |
+          cmake --version
+          gcc --version | head -1
+          echo "Version: ${VERSION}"
+
+      - name: Build and package
+        run: bash scripts/ci/build.sh "${VERSION}"
+
+      - name: Upload PR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ignite-${{ env.VERSION }}-linux-x86_64
+          path: |
+            dist/*.zip
+            dist/*.sha256
+          if-no-files-found: error
