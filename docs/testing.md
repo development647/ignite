@@ -75,6 +75,36 @@ strace -f -e trace=openat,access -o /tmp/ignite.strace ./Ignite
 grep -E 'Ignite\.sf2|ENOENT' /tmp/ignite.strace | tail -20
 ```
 
+## 2.1 Built-in GUI test screens
+
+The application itself is a JUCE GUI application; there is no separate test-only GUI binary. The main UI runs at 1024×600 and is the screen exercised by manual testing.
+
+The build sets `ENABLE_HARDWARE_TEST=1` by default in `Source/Application/CMakeLists.txt`, which compiles in additional test controls. In the running UI:
+
+1. Open **Settings**.
+2. Open **Miscellaneous Options**.
+3. Select **Test Data Mgmt**.
+
+The **Test Data Mgmt** screen can create/wipe test data for songs, scenes, tracks, patterns, bars, and instruments. It also contains:
+
+- **HardwareTest** — starts the hardware-test mode (front-panel/MCU path).
+- **Touch Test** — shows a 10×8 touch grid and a colour bar; every grid cell must be touched before the test completes.
+- **Mcu FW Upgrade test** — triggers the MCU firmware-upgrade test command.
+
+If `ENABLE_HARDWARE_TEST` is set to `FALSE`, these screens are compiled out.
+
+There is also an optional Windows-only front-panel keyboard simulator guarded by `FP_TEST_KEYBRD` in `Source/Application/modules/Firmware/Application/Model/FrontPannelManager.h`. It is commented out by default and is not built on Linux.
+
+For a headless screenshot of the GUI, run it under Xvfb and capture the root window:
+
+```sh
+cd build/apps/ignite/Ignite_artefacts/Release
+xvfb-run -a -s "-screen 0 1024x600x24" sh -c \
+  './Ignite & sleep 10; import -window root /tmp/ignite-gui.png; kill %1'
+```
+
+`import` comes from ImageMagick.
+
 ## 3. Manual test checklist
 
 A successful start is not enough. At minimum exercise the following in the UI. This list is intentionally broad; use your product requirements to decide which paths are release-blocking.
