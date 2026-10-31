@@ -271,7 +271,8 @@ lengths and ranges, and keep the device-side adapter thin.
   the implicit XML files, and the internal parameter IDs.
 - **What should you do first?** Extract a versioned project schema from `EngineDataStruct.h` and
   `EngineFileHandler`, publish it, and build a read-only/file-based companion before attempting a
-  live editor.
+  live editor. A starting point now exists in `../companion/schema/`, including a proposed
+  `project-manifest-v1.xsd` and a `v0-to-v1` migration plan.
 - **What should you avoid?** Coupling the companion to numeric `paramId_t`/`moduleId_t` values,
   internal pointers, `FILE_VERSION = 0` XML details, or the current ad-hoc PlayTribe/USB command
   strings.

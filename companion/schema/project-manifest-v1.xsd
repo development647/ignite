@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  PROPOSED IGNITE companion project manifest, schemaVersion 1.
+
+  This manifest does NOT exist in the current device output. The device currently
+  writes an unmanifested tree of XML files. This is the envelope a companion should
+  add when it takes ownership of a project, so it can version, validate, migrate,
+  and safely round-trip the tree.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           version="1.0">
+
+  <xs:simpleType name="ObjectType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="song"/>
+      <xs:enumeration value="scene"/>
+      <xs:enumeration value="track-list"/>
+      <xs:enumeration value="pattern"/>
+      <xs:enumeration value="bar"/>
+      <xs:enumeration value="step"/>
+      <xs:enumeration value="instrument"/>
+      <xs:enumeration value="settings"/>
+      <xs:enumeration value="calibration"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="FileEntry">
+    <xs:attribute name="path" type="xs:string" use="required"/>
+    <xs:attribute name="type" type="xs:string" use="optional"/>
+    <xs:attribute name="fileVersion" type="xs:nonNegativeInteger" use="optional"/>
+    <xs:attribute name="bytes" type="xs:unsignedLong" use="optional"/>
+    <xs:attribute name="sha256" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="ObjectEntry">
+    <xs:attribute name="type" type="ObjectType" use="required"/>
+    <xs:attribute name="path" type="xs:string" use="required"/>
+    <xs:attribute name="name" type="xs:string" use="optional"/>
+    <xs:attribute name="id" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="MigrationEntry">
+    <xs:attribute name="from" type="xs:nonNegativeInteger" use="required"/>
+    <xs:attribute name="to" type="xs:nonNegativeInteger" use="required"/>
+    <xs:attribute name="appliedAt" type="xs:dateTime" use="optional"/>
+    <xs:attribute name="appVersion" type="xs:string" use="optional"/>
+    <xs:attribute name="note" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:element name="IgniteProject">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Metadata" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:attribute name="projectName" type="xs:string" use="optional"/>
+            <xs:attribute name="createdBy" type="xs:string" use="optional"/>
+            <xs:attribute name="deviceModel" type="xs:string" use="optional"/>
+            <xs:attribute name="firmwareVersion" type="xs:string" use="optional"/>
+            <xs:attribute name="minimumReaderVersion" type="xs:positiveInteger" use="optional"/>
+            <xs:anyAttribute processContents="lax"/>
+          </xs:complexType>
+        </xs:element>
+
+        <xs:element name="Objects" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Object" type="ObjectEntry" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:anyAttribute processContents="lax"/>
+          </xs:complexType>
+        </xs:element>
+
+        <xs:element name="Files" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="File" type="FileEntry" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:anyAttribute processContents="lax"/>
+          </xs:complexType>
+        </xs:element>
+
+        <xs:element name="MigrationHistory" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Migration" type="MigrationEntry" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:anyAttribute processContents="lax"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+
+      <xs:attribute name="schemaVersion" type="xs:positiveInteger" use="required"/>
+      <xs:attribute name="format" type="xs:string" use="optional"/>
+      <xs:attribute name="createdAt" type="xs:dateTime" use="optional"/>
+      <xs:attribute name="updatedAt" type="xs:dateTime" use="optional"/>
+      <xs:attribute name="minimumFirmwareVersion" type="xs:string" use="optional"/>
+      <xs:anyAttribute processContents="lax"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

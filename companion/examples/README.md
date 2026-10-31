@@ -4,8 +4,13 @@ These examples follow the current `EngineFileHandler` output shape and are inten
 companion app. They are **not** a complete project tree; they show one representative file of each
 core type.
 
-They validate against `../schema/ignite-xml-v0.xsd` when using an XSD 1.0 validator. The settings file
-is intentionally loose in the schema because the settings roots are still changing.
+`project-manifest.xml` is a **proposed companion envelope**; the current device does not write it.
+It demonstrates how to wrap the legacy tree with `schemaVersion=1`, object/file inventories,
+checksums, and migration history. See `../schema/migrations/README.md`.
+
+The object examples validate against `../schema/ignite-xml-v0.xsd`. The proposed manifest validates
+against `../schema/project-manifest-v1.xsd`. The settings example is intentionally loose in the object
+schema because the settings roots are still changing.
 
 Typical project tree:
 

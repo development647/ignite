@@ -79,6 +79,21 @@ attributes are still changing and are spread across several sections of `EngineF
 | `Instrument/Data` | `InstrumentData` | MIDI and internal-sound instrument settings |
 | `Instrument/Data/tv` | `TrackValue` | Knob assignment/CC/program-change data |
 
+## Proposed manifest and migrations
+
+The current device has no project manifest. A companion should add one when it adopts a legacy tree:
+
+- [`project-manifest-v1.xsd`](project-manifest-v1.xsd) — proposed `IgniteProject.xml` envelope.
+- [`../examples/project-manifest.xml`](../examples/project-manifest.xml) — example manifest.
+- [`migrations/README.md`](migrations/README.md) — version policy and safe migration sequence.
+- [`migrations/v0-to-v1.md`](migrations/v0-to-v1.md) — first migration: legacy tree -> manifested v1.
+
+The manifest is the project-level version. The XML objects keep their own `FILE_VERSION` values. A
+project can be `schemaVersion=1` while its object files remain at `FILE_VERSION=0`.
+
+The first migration is intentionally non-destructive: it inventories files and adds checksums; it
+does not rewrite object fields.
+
 ## Important limitations
 
 1. **This is v0.** `FILE_VERSION` is currently `0`, and there is no migration framework.
